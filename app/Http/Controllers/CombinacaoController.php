@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Combinacao\{IndexRequest, StoreRequest};
-use App\Http\Resources\Combinacao\IndexCollection;
-use App\Http\Resources\Combinacao\ShowResource;
+use App\Http\Requests\Combinacao\{IndexRequest, StoreRequest, UpdateRequest};
+use App\Http\Resources\Combinacao\{IndexCollection, ShowResource};
 use App\Models\Combinacao;
 use App\Services\CombinacaoService;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\{JsonResponse, Request};
 use Illuminate\Support\Facades\Log;
 
 class CombinacaoController extends Controller
@@ -75,9 +73,23 @@ class CombinacaoController extends Controller
         }
     }
 
-    public function update(Request $request, Combinacao $combinacao)
+    public function update(UpdateRequest $request, Combinacao $combinacao): JsonResponse
     {
-        //
+        $message = $this->arrayErrorMessage['update'];
+        $status = JsonResponse::HTTP_BAD_REQUEST;
+        
+        try {
+            $combinacaoAtualizada = $this->service->update($request);
+
+            if (!$combinacaoAtualizada) {
+                return response()->json(['message' => $message,], $status);
+            } else {
+                return response()->json(['message' => 'Combinacao atualizada com sucesso'], JsonResponse::HTTP_OK);
+            }
+        } catch (\Throwable $th) {
+            Log::critical($message . $th->getMessage());
+            return response()->json(['message' => $message, 'error' => $th->getMessage()], $status);
+        }
     }
 
     public function destroy(Combinacao $combinacao)
