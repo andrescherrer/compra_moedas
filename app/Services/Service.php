@@ -22,6 +22,4 @@ abstract class Service
     abstract public function findOrFail($id): Model | bool;
 
     abstract public function update(Request $request): bool;
-
-    abstract public function delete(Request $request): bool;
 }
