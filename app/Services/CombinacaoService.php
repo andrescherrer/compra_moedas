@@ -61,19 +61,7 @@ class CombinacaoService extends Service
             Log::critical("Erro ao atualizar Combinacao: ". $th->getMessage());
             return false;
         }
-    }
-
-    public function delete(Request $request): bool
-    {
-        try {
-            $model = $this->model->findOrFail($request->id);
-            $model->delete();
-            return true;
-        } catch(\Throwable $th) {
-            Log::critical("Erro ao remover Combinacao: ". $th->getMessage());
-            return false;
-        }
-    }
+    }    
 
     private function functionModelName($request, $query)
     {
