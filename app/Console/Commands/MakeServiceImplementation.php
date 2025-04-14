@@ -87,6 +87,17 @@ class {$serviceName} extends Service
         }
     }
 
+    public function findOrFail(\$id): Model | bool
+    {
+        try {
+            return \$this->model->findOrFail(\$id);
+        } catch(ModelNotFoundException \$e) {
+            throw new ModelNotFoundException("{$modelName} com ID {\$id} não encontrada");
+            Log::critical("Erro ao buscar {$modelName}: ". \$e->getMessage());
+            return false;
+        }
+    }
+
     public function update(Request \$request): bool
     {
         try {
