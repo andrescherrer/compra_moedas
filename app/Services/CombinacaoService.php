@@ -55,8 +55,7 @@ class CombinacaoService extends Service
     public function update(Request $request): bool
     {
         try {
-            $model = $this->model->findOrFail($request->id);
-            $model->update($request->all());
+            $this->model->update($request->validated());
             return true;
         } catch(\Throwable $th) {
             Log::critical("Erro ao atualizar Combinacao: ". $th->getMessage());
