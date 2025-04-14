@@ -92,8 +92,21 @@ class CombinacaoController extends Controller
         }
     }
 
-    public function destroy(Combinacao $combinacao)
+    public function destroy(Combinacao $combinacao): JsonResponse
     {
-        //
+        $message = $this->arrayErrorMessage['destroy'];
+        $status = JsonResponse::HTTP_BAD_REQUEST;
+        try {
+            $combinacaoDeletada = $combinacao->delete();
+
+            if (!$combinacaoDeletada) {
+                return response()->json(['message' => $message,], $status);
+            } else {
+                return response()->json(['message' => 'Combinacao deletada com sucesso'], JsonResponse::HTTP_OK);
+            }
+        } catch (\Throwable $th) {
+            Log::critical($message . $th->getMessage());
+            return response()->json(['message' => $message, 'error' => $th->getMessage()], $status);
+        }
     }
 }
