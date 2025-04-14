@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Combinacao\{IndexRequest, StoreRequest};
 use App\Http\Resources\Combinacao\IndexCollection;
+use App\Http\Resources\Combinacao\ShowResource;
 use App\Models\Combinacao;
 use App\Services\CombinacaoService;
 use Illuminate\Http\Request;
@@ -59,10 +60,19 @@ class CombinacaoController extends Controller
             return response()->json(['message' => $message, 'error' => $th->getMessage()], $status);
         }
     }
-    
-    public function show(Combinacao $combinacao)
+
+    public function show($id): ShowResource | JsonResponse
     {
-        //
+        $status = JsonResponse::HTTP_BAD_REQUEST;
+        $message = $this->arrayErrorMessage['show'];
+
+        try {    
+            $combinacao = $this->service->findOrFail($id);
+            return  new ShowResource($combinacao);
+        } catch (\Throwable $th) {
+            Log::critical($message . $th->getMessage());
+            return response()->json(['message' => $message, 'error' => $th->getMessage()], $status);
+        }
     }
 
     public function update(Request $request, Combinacao $combinacao)
