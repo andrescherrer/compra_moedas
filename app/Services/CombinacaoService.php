@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Models\Combinacao;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class CombinacaoService extends Service
@@ -35,6 +37,17 @@ class CombinacaoService extends Service
             return true;
         } catch(\Throwable $th) {
             Log::critical("Erro ao salvar Combinacao: ". $th->getMessage());
+            return false;
+        }
+    }
+
+    public function findOrFail($id): Combinacao | bool
+    {
+        try {
+            return $this->model->findOrFail($id);
+        } catch(ModelNotFoundException $e) {
+            throw new ModelNotFoundException("Combinacao com ID {$id} não encontrada");
+            Log::critical("Erro ao buscar Combinacao: ". $e->getMessage());
             return false;
         }
     }
